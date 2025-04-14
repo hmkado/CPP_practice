@@ -3,20 +3,30 @@
 #include <vector>
 #include <ctime>
 #include <memory>
+#include <algorithm>
 
 class Sensor{
+    protected:
+        std::string id;
     public:
+        Sensor(const std::string& sensor_id)
+        :id(sensor_id)
+        {
+            
+        }
         virtual ~Sensor(){}
 
         virtual float readData() = 0;
 
-        virtual std::string getType() const{
-            return "Generic Sensor";
+        virtual std::string getType() const = 0;
+        std::string getID() const{
+            return id;
         }
 };
 
 class TemperatureSensor : public Sensor{
     public:
+        TemperatureSensor(const std::string& id) : Sensor(id){}
         float readData() override{
             float temp = static_cast<float>((std::rand()%4000))/100.0f;
             return temp;
@@ -28,6 +38,7 @@ class TemperatureSensor : public Sensor{
 
 class DistanceSensor : public Sensor{
     public:
+        DistanceSensor(const std::string& id) : Sensor(id){}
         float readData() override{
             float dist = static_cast<float>((std::rand()%1000))/100.0f;
             return dist;
@@ -47,7 +58,7 @@ class Robot{
         :name(robot_name){
             std::cout<<"Robot "<<name<<" Initialized\n";
         }
-        
+
         ~Robot(){
             std::cout<<"Robot "<<name<<" Deconstructed\n";
         }
@@ -56,10 +67,24 @@ class Robot{
             sensors.push_back(std::move(sensor));
         }
 
-        void readSensors() const{
+        void addSensor2(const std::string& sensor_name, const std::string& sensor_type){
+            if (sensor_type == "t"){
+                sensors.push_back(std::make_unique<TemperatureSensor>(sensor_name));
+            }else{
+                sensors.push_back(std::make_unique<DistanceSensor>(sensor_name));
+            }
+        }
+
+        void removeSensorByID(const std::string& id){
+            sensors.erase(std::remove_if(sensors.begin(),sensors.end(),[&](const std::unique_ptr<Sensor>& s){
+                return s->getID() == id;
+            }),sensors.end());
+        }
+
+        void printSensors() const{
             std::cout<<"Reading "<<name<<" Sensors...\n";
             for (const auto& s : sensors){
-                std::cout<<"- "<<s->getType()<<" : "<<s->readData();
+                std::cout<<"- ID : "<<s->getID()<<" "<<s->getType()<<" : "<<s->readData()<<"\n";
             }
         }
 
@@ -74,43 +99,16 @@ class Robot{
 
 int main(){
     std::srand(std::time(NULL));
-
-    std::vector<std::unique_ptr<Robot>> robots;
-    robots.push_back(std::make_unique<Robot>("R1"));
-    robots.push_back(std::make_unique<Robot>("R2"));
-    robots.push_back(std::make_unique<Robot>("R3"));
+    Robot robot1("R1");
     
-    robots[0]->addSensor(std::make_unique<TemperatureSensor>());
-    robots[1]->addSensor(std::make_unique<DistanceSensor>());
-    robots[1]->addSensor(std::make_unique<TemperatureSensor>());
-    robots[2]->addSensor(std::make_unique<DistanceSensor>());
-    robots[2]->addSensor(std::make_unique<TemperatureSensor>());
+    robot1.addSensor2("T1","t");
+    robot1.addSensor2("D1","d");
     
-    for (const auto& robot : robots){
-        std::cout<<"Robot : "<<robot->getName()<<"\n";
+    robot1.printSensors();
 
-        bool hasTemp = false;
-        bool hasDist = false;
-        for (const auto& sensor : robot->getSensor()){
-            auto* tempSensor = dynamic_cast<TemperatureSensor*>(sensor.get());
-            auto* distSensor = dynamic_cast<DistanceSensor*>(sensor.get());
-            if (tempSensor) {
-                std::cout<<"Temperature : "<<sensor->readData()<<" C\n";
-                hasTemp = true;
-            }
-            if (distSensor) {
-                std::cout<<"Distance : "<<sensor->readData()<<" m\n";
-                hasDist = true;
-            }   
-        }
+    robot1.removeSensorByID("T1");
 
-        if(!hasTemp){
-            std::cout<<"No Temperature Sensor\n";
-        }
-        if(!hasDist){
-            std::cout<<"No Distance Sensor\n";
-        }
-    } 
+    robot1.printSensors();
 
     return 0;
 }
