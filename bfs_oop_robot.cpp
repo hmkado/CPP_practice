@@ -173,57 +173,6 @@ int main(){
     std::string line;
     std::istringstream iss;
 
-    /*
-    iss.clear();
-    std::cout<<"Type row and col size : ";
-    std::getline(std::cin, line);
-    iss.str(line);
-
-    if ((iss>>rows) && (iss.peek() == ' ') && (iss>>cols)){
-        std::cout<<"Rows and cols entered"<<std::endl;
-    } else {
-        std::cerr<<"Invalid input"<<std::endl;
-        return 0;
-    }
-
-    line.clear();
-    iss.clear();
-    std::cout<<"Type robot starting point : ";
-    std::getline(std::cin, line);
-    iss.str(line);
-
-    if ((iss>>s_x) && (iss.peek() == ' ') && (iss>>s_y)){
-        if (s_x < 0 || s_x >= rows || s_y < 0 || s_y >= cols){
-            std::cerr<<"Input out of bounds"<<std::endl;
-            return 0;
-        }
-        std::cout<<"Robot starting point entered"<<std::endl;
-    } else {
-        std::cerr<<"Invalid input"<<std::endl;
-        return 0;
-    }
-
-    line.clear();
-    iss.clear();
-    std::cout<<"Type robot goal point : ";
-    std::getline(std::cin, line);
-    iss.str(line);
-    
-    if ((iss>>g_x) && (iss.peek() == ' ') && (iss>>g_y)){
-        if (g_x < 0 || g_x >= rows || g_y < 0 || g_y >= cols){
-            std::cerr<<"Input out of bounds"<<std::endl;
-            return 0;
-        }
-        std::cout<<"Robot goal point entered"<<std::endl;
-    } else {
-        std::cerr<<"Invalid input"<<std::endl;
-        return 0;
-    }
-
-    line.clear();
-    iss.clear();
-    */
-
     rows = 10;
     cols = 15;
     s_x = 1; s_y = 2;
