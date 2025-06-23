@@ -174,7 +174,7 @@ class kalmanFilter {
         :gps(g),dt(res)
         {
             ax = 0;
-            ay = 0;
+            ay = -GRAVITY;
             state = std::vector<std::vector<float>>(4,std::vector<float>(1,0.0f));
             F = std::vector<std::vector<float>>(4,std::vector<float>(4,0.0f));
             P = std::vector<std::vector<float>>(4,std::vector<float>(4,0.0f));
@@ -243,12 +243,12 @@ int main(){
     float altitude = 0; 
     float n = 0; 
     float resolution = .1;
-    float Qmod = .01;
+    float Qmod = .05;
     float Rmod = 5.0;
     float noise_lvl = 10.0;
     int duration = 100;
     int count = 0;
-    std::string LorP = "L";
+    std::string LorP = "P";
     std::vector<std::vector<float>> output(1,std::vector<float>(6,0.0f));
     std::vector<float> output_line(6,0.0f);
     std::shared_ptr<Particle>P1;
